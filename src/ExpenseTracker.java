@@ -1,24 +1,28 @@
 import java.util.Scanner;
+
 public class ExpenseTracker {
 
     private Scanner scan;
     private ExpenseManager expenseManager;
 
-    public ExpenseTracker(){
+    public ExpenseTracker() {
         scan = new Scanner(System.in);
         expenseManager = new ExpenseManager();
     }
 
-    public void start(){
+    public void start() {
 
         boolean isRunning = true;
 
-        while(isRunning){
+        while (isRunning) {
             System.out.println("Welcome to Expense Tracker!");
             System.out.println("1. Add Expense");
             System.out.println("2. List Expense");
-            System.out.println("3. Show total");
-            System.out.println("4. Exit");
+            System.out.println("3. Delete Expense");
+            System.out.println("4. Filter Expense");
+            System.out.println("5. Show total by Expense Category");
+            System.out.println("6. Show total");
+            System.out.println("7. Exit");
 
             System.out.println("Select any above options to proceed...");
             int choice = scan.nextInt();
@@ -26,16 +30,16 @@ public class ExpenseTracker {
 
             switch (choice) {
                 case 1:
-                    System.out.println("Enter expense description: ");
-                    String name = scan.nextLine();
+                    String name = readText("Enter expense description: ");
+//                   String name  = scan.nextLine();
 
-                    System.out.println("Enter expense Category: ");
-                    String type = scan.nextLine();
+                    String type = readText("Enter expense Category: ");
+//                    String type = scan.nextLine();
 
-                    System.out.println("Enter expense Amount: ");
-                    double amount = scan.nextDouble();
-                    scan.nextLine();
-
+//                    System.out.println("Enter expense Amount: ");
+//                    double amount = scan.nextDouble();
+//                    scan.nextLine();
+                    double amount = readAmount();
                     Expense expense = new Expense(name, type, amount);
 
                     expenseManager.addExpense(expense);
@@ -47,10 +51,44 @@ public class ExpenseTracker {
                     break;
 
                 case 3:
+                    expenseManager.listExpenses();
+                    System.out.println("Enter the Expense id you want deleted: ");
+                    int id = scan.nextInt();
+                    scan.nextLine();
+                    boolean isdeleted = expenseManager.deleteExpense(id);
+                    if (isdeleted) {
+                        System.out.println("Expense Deleted Successfully");
+                        expenseManager.listExpenses();
+                    } else {
+                        System.out.println("No valid entry found for the provided Expense Id..!!");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Filter by which category: ");
+                    String filterBy = scan.nextLine();
+                    if(expenseManager.isCategoryPresent(filterBy)) {
+                        expenseManager.listExpensesByCategory(filterBy);
+                    } else {
+                        System.out.println("No Expense Found For Category: " + filterBy);
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("Show total by which category: ");
+                    String showBy = scan.nextLine();
+                    if(expenseManager.isCategoryPresent(showBy)){
+                        System.out.println(showBy + " Total: " + expenseManager.getTotalAmountByCategory(showBy));
+                    }
+                    else{
+                        System.out.println("No Expense Found For Category: " + showBy);
+                    }
+                    break;
+
+                case 6:
                     System.out.println("Total: " + "$" + expenseManager.getTotalAmount());
                     break;
 
-                case 4:
+                case 7:
                     isRunning = false;
                     System.out.println("Thank You!!!");
                     break;
@@ -62,6 +100,40 @@ public class ExpenseTracker {
         }
 
     }
+
+    private double readAmount() {
+        while (true) {
+            System.out.println("Enter expense Amount: ");
+            if (scan.hasNextDouble()) {
+                double amount = scan.nextDouble();
+                scan.nextLine();
+
+                if (amount > 0) {
+                    return amount;
+                }
+            } else {
+                System.out.println("Enter Valid expense Amount...!");
+                scan.nextLine();
+            }
+        }
+
+    }
+
+    private String readText(String message) {
+        while (true) {
+            System.out.println(message);
+            String input = scan.nextLine();
+
+            if (!input.trim().isEmpty()) {
+                return input;
+            }
+
+            System.out.println("Input cannot be empty..!");
+
+        }
+    }
+
+
 
 
 }
