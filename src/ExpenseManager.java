@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 
 public class ExpenseManager {
@@ -21,26 +23,34 @@ public class ExpenseManager {
         }
     }
 
-    public double getTotalAmount(){
+    public double getTotalAmount() {
         double sum = 0;
-        for (Expense expense : expenses){
+        for (Expense expense : expenses) {
             sum += expense.getAmount();
         }
         return sum;
     }
 
-    public boolean deleteExpense(int id){
+    public List<Expense> getExpense() {
+        return expenses;
+    }
+
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
+    }
+
+    public boolean deleteExpense(int id) {
 //        for(Expense expense : expenses){
 //            if(expense.getId() == id){
 //                expense.remo
 //            }
 //        }
         Iterator<Expense> iterator = expenses.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
 
             Expense expense = iterator.next();
 
-            if(expense.getId() == id){
+            if (expense.getId() == id) {
                 iterator.remove();
                 return true;
             }
@@ -48,9 +58,9 @@ public class ExpenseManager {
         return false;
     }
 
-    public boolean isCategoryPresent(String category){
-        for(Expense expense : expenses){
-            if(expense.getCategory().equalsIgnoreCase(category)){
+    public boolean isCategoryPresent(String category) {
+        for (Expense expense : expenses) {
+            if (expense.getCategory().equalsIgnoreCase(category)) {
                 return true;
             }
         }
@@ -58,20 +68,20 @@ public class ExpenseManager {
     }
 
 
-    public void listExpensesByCategory(String category){
-        for(Expense expense : expenses){
-            if(expense.getCategory().equalsIgnoreCase(category)){
+    public void listExpensesByCategory(String category) {
+        for (Expense expense : expenses) {
+            if (expense.getCategory().equalsIgnoreCase(category)) {
                 System.out.println(expense.getId() + "." + expense.getDescription() + " | " + expense.getCategory() + " | " + expense.getAmount());
             }
         }
     }
 
-    public double getTotalAmountByCategory(String category){
+    public double getTotalAmountByCategory(String category) {
         double total = 0;
 
-        for(Expense expense : expenses){
-            if(expense.getCategory().equalsIgnoreCase(category)){
-                total+=expense.getAmount();
+        for (Expense expense : expenses) {
+            if (expense.getCategory().equalsIgnoreCase(category)) {
+                total += expense.getAmount();
             }
         }
         return total;

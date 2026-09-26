@@ -1,16 +1,22 @@
 import java.util.Scanner;
+import java.io.IOException;
+import java.util.List;
 
 public class ExpenseTracker {
 
     private Scanner scan;
     private ExpenseManager expenseManager;
+    private ExpenseFileRepository repository;
 
     public ExpenseTracker() {
         scan = new Scanner(System.in);
         expenseManager = new ExpenseManager();
+        repository = new ExpenseFileRepository();
     }
 
     public void start() {
+
+        loadExpenses();
 
         boolean isRunning = true;
 
@@ -22,7 +28,9 @@ public class ExpenseTracker {
             System.out.println("4. Filter Expense");
             System.out.println("5. Show total by Expense Category");
             System.out.println("6. Show total");
-            System.out.println("7. Exit");
+            System.out.println("7. Save to File");
+            System.out.println("8. Read from File");
+            System.out.println("9. Exit");
 
             System.out.println("Select any above options to proceed...");
             int choice = scan.nextInt();
@@ -48,6 +56,11 @@ public class ExpenseTracker {
 
                 case 2:
                     expenseManager.listExpenses();
+//                    try {
+//                        repository.loadExpenses();
+//                    } catch (IOException e){
+//                        System.out.println(e);
+//                    }
                     break;
 
                 case 3:
@@ -66,7 +79,7 @@ public class ExpenseTracker {
                 case 4:
                     System.out.println("Filter by which category: ");
                     String filterBy = scan.nextLine();
-                    if(expenseManager.isCategoryPresent(filterBy)) {
+                    if (expenseManager.isCategoryPresent(filterBy)) {
                         expenseManager.listExpensesByCategory(filterBy);
                     } else {
                         System.out.println("No Expense Found For Category: " + filterBy);
@@ -76,10 +89,9 @@ public class ExpenseTracker {
                 case 5:
                     System.out.println("Show total by which category: ");
                     String showBy = scan.nextLine();
-                    if(expenseManager.isCategoryPresent(showBy)){
+                    if (expenseManager.isCategoryPresent(showBy)) {
                         System.out.println(showBy + " Total: " + expenseManager.getTotalAmountByCategory(showBy));
-                    }
-                    else{
+                    } else {
                         System.out.println("No Expense Found For Category: " + showBy);
                     }
                     break;
@@ -89,6 +101,24 @@ public class ExpenseTracker {
                     break;
 
                 case 7:
+                    try {
+                        repository.saveExpenses(expenseManager.getExpense());
+                        System.out.println("Expenses saved successfully.");
+                    } catch (IOException e) {
+                        System.out.println("Could not save expenses.");
+                    }
+                    break;
+
+                case 8:
+                    try {
+                        repository.loadExpenses();
+                    } catch (IOException e) {
+                        System.out.println(e);
+                    }
+                    break;
+
+
+                case 9:
                     isRunning = false;
                     System.out.println("Thank You!!!");
                     break;
@@ -133,7 +163,15 @@ public class ExpenseTracker {
         }
     }
 
-
+    private void loadExpenses() {
+        try {
+            List<Expense> expenses = repository.loadExpenses();
+            expenseManager.setExpenses(expenses);
+            System.out.println("Expenses loaded successfully.");
+        } catch (IOException e) {
+            System.out.println("Could not load expenses.");
+        }
+    }
 
 
 }

@@ -13,7 +13,18 @@ public class Expense {
         this.amount = amount;
     }
 
-    public int getId(){
+    public Expense(int id, String description, String category, double amount) {
+        this.id = id;
+        this.description = description;
+        this.category = category;
+        this.amount = amount;
+
+        if (id >= nextId) {
+            nextId = id + 1;
+        }
+    }
+
+    public int getId() {
         return id;
     }
 
